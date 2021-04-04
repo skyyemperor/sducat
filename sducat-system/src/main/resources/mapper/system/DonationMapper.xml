@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sducat.system.mapper.DonationMapper">
+    <resultMap id="BaseResultMap" type="com.sducat.system.data.po.Donation">
+        <!--@mbg.generated-->
+        <!--@Table donation-->
+        <id column="donation_id" jdbcType="BIGINT" property="donationId"/>
+        <result column="user_name" jdbcType="VARCHAR" property="userName"/>
+        <result column="money" jdbcType="INTEGER" property="money"/>
+        <result column="date" jdbcType="DATE" property="date"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        donation_id, user_name, money, `date`
+    </sql>
+
+    <select id="selectDonationList" resultMap="BaseResultMap">
+        SELECT donation_id, user_name, money, `date`
+        FROM donation
+        WHERE YEAR(date) = #{year}
+          AND MONTH(date) = #{month}
+        ORDER BY CONVERT(user_name USING gbk)
+    </select>
+</mapper>

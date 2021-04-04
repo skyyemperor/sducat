@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sducat.system.mapper.CatMapper">
+    <resultMap id="CatResult" type="com.sducat.system.data.po.Cat">
+        <!--@Table cat-->
+        <id column="cat_id" jdbcType="BIGINT" property="catId"/>
+        <result column="cat_name" jdbcType="VARCHAR" property="catName"/>
+        <result column="status" jdbcType="TINYINT" property="status"/>
+        <result column="sex" jdbcType="CHAR" property="sex"/>
+        <result column="birthday" jdbcType="INTEGER" property="birthday"/>
+        <result column="shape" jdbcType="VARCHAR" property="shape"/>
+        <result column="color" jdbcType="VARCHAR" property="color"/>
+        <result column="character" jdbcType="VARCHAR" property="character"/>
+        <result column="campus" jdbcType="VARCHAR" property="campus"/>
+        <result column="usual_place" jdbcType="VARCHAR" property="usualPlace"/>
+        <result column="vaccination" jdbcType="TINYINT" property="vaccination"/>
+        <result column="sterilization" jdbcType="TINYINT" property="sterilization"/>
+        <result column="health" jdbcType="VARCHAR" property="health"/>
+        <result column="note" jdbcType="VARCHAR" property="note"/>
+        <result column="adopt_note" jdbcType="VARCHAR" property="adoptNote"/>
+        <result column="relation" jdbcType="VARCHAR" property="relation"/>
+        <result column="round_pic" jdbcType="VARCHAR" property="roundPic"/>
+        <result column="main_pic" jdbcType="VARCHAR" property="mainPic"/>
+        <result column="slide_pic" jdbcType="VARCHAR" property="slidePic"/>
+        <collection property="relatives" resultMap="CatLessResult"/>
+    </resultMap>
+
+    <resultMap id="CatLessResult" type="com.sducat.system.data.dto.CatLessDto">
+        <result column="less_cat_id" property="catId"/>
+        <result column="less_cat_name" property="catName"/>
+        <result column="less_status" property="status"/>
+        <result column="less_sex" property="sex"/>
+        <result column="less_birthday" property="birthday"/>
+        <result column="less_campus" property="campus"/>
+        <result column="less_character" property="character"/>
+        <result column="less_round_pic" property="roundPic"/>
+        <result column="less_main_pic" property="mainPic"/>
+    </resultMap>
+
+    <sql id="SelectCatVo">
+        SELECT c.cat_id,
+               c.cat_name,
+               c.`status`,
+               c.sex,
+               c.birthday,
+               c.shape,
+               c.color,
+               c.`character`,
+               c.campus,
+               c.usual_place,
+               c.vaccination,
+               c.sterilization,
+               c.health,
+               c.note,
+               c.adopt_note,
+               c.relation,
+               c.round_pic,
+               c.main_pic,
+               c.slide_pic,
+               less_cat.cat_id      as less_cat_id,
+               less_cat.cat_name    as less_cat_name,
+               less_cat.status      as less_status,
+               less_cat.sex         as less_sex,
+               less_cat.birthday    as less_birthday,
+               less_cat.campus      as less_campus,
+               less_cat.`character` as less_character,
+               less_cat.round_pic   as less_round_pic,
+               less_cat.main_pic    as less_main_pic
+        FROM cat c
+                     LEFT JOIN cat_relation cr ON c.cat_id = cr.cat_id
+                     LEFT JOIN cat less_cat ON cr.relative_id = less_cat.cat_id
+    </sql>
+
+    <sql id="SelectCatLessVo">
+        SELECT cat_id,
+               cat_name,
+               `status`,
+               sex,
+               birthday,
+               campus,
+               `character`,
+               round_pic,
+               main_pic
+        FROM cat
+    </sql>
+
+    <sql id="SelectCatAdopt">
+        SELECT cat_id,
+               cat_name,
+               sex,
+               birthday,
+               vaccination,
+               sterilization,
+               adopt_note,
+               main_pic
+        FROM cat
+    </sql>
+
+    <select id="selectCatByCatId" resultMap="CatResult">
+        <include refid="SelectCatVo"/>
+        WHERE c.cat_id = #{catId}
+    </select>
+
+    <select id="searchCat" resultMap="CatResult">
+        <include refid="SelectCatLessVo"/>
+        <where>
+            <if test="catName != null and catName != ''">
+                AND cat_name like concat('%', #{catName}, '%')
+            </if>
+            <if test="campus != null and campus != ''">
+                AND campus = #{campus}
+            </if>
+            <!--猫咪状态为在校时，待领养也属于在校-->
+            <if test="status != null and status == @com.sducat.common.enums.CatStatusEnum@AT_SCHOOL">
+                AND (status = #{status.key} OR status =
+                                               '${@com.sducat.common.enums.CatStatusEnum@WAIT_ADOPTED.getKey()}')
+            </if>
+            <if test="status != null and status != @com.sducat.common.enums.CatStatusEnum@AT_SCHOOL">
+               AND status = #{status.key}
+            </if>
+            <if test="color != null and color != ''">
+                AND color = #{color}
+            </if>
+        </where>
+        LIMIT #{offset}, #{count}
+    </select>
+
+    <select id="selectCatAdoptList" resultMap="CatResult">
+        <include refid="SelectCatAdopt"/>
+        WHERE status = '${@com.sducat.common.enums.CatStatusEnum@WAIT_ADOPTED.getKey()}'
+        LIMIT #{offset}, #{count}
+    </select>
+</mapper>

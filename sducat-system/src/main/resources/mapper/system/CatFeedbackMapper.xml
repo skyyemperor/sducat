@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sducat.system.mapper.CatFeedbackMapper">
+    <resultMap id="FeedbackResult" type="com.sducat.system.data.po.Feedback">
+        <!--@Table cat_feedback-->
+        <id column="feedback_id" jdbcType="BIGINT" property="feedbackId"/>
+        <result column="cat_id" jdbcType="BIGINT" property="catId"/>
+        <result column="user_id" jdbcType="BIGINT" property="userId"/>
+        <result column="content" jdbcType="VARCHAR" property="content"/>
+        <result column="contact_way" jdbcType="VARCHAR" property="contactWay"/>
+        <result column="date" jdbcType="TIMESTAMP" property="date"/>
+        <result column="checked" jdbcType="TINYINT" property="checked"/>
+    </resultMap>
+
+    <resultMap id="FeedbackDtoResult" type="com.sducat.system.data.dto.FeedbackDto">
+        <result column="feedback_id" property="feedbackId"/>
+        <result column="submitUserName" property="submitUserName"/>
+        <result column="content" property="content"/>
+        <result column="contact_way" property="contactWay"/>
+        <result column="date" property="date"/>
+        <result column="checked" jdbcType="TINYINT" property="checked"/>
+        <association property="cat" resultMap="com.sducat.system.mapper.CatMapper.CatLessResult"/>
+    </resultMap>
+
+    <sql id="SelectFeedbackDto">
+        SELECT f.feedback_id,
+               u.nick_name          as submitUserName,
+               f.content,
+               f.contact_way,
+               f.`date`,
+               f.checked,
+               less_cat.cat_id      as less_cat_id,
+               less_cat.cat_name    as less_cat_name,
+               less_cat.status      as less_status,
+               less_cat.sex         as less_sex,
+               less_cat.birthday    as less_birthday,
+               less_cat.campus      as less_campus,
+               less_cat.`character` as less_character,
+               less_cat.round_pic   as less_round_pic,
+               less_cat.main_pic    as less_main_pic
+        FROM cat_feedback f
+                     LEFT JOIN cat less_cat on f.cat_id = less_cat.cat_id
+                     LEFT JOIN sys_user u ON f.user_id = u.user_id
+    </sql>
+
+    <select id="getFeedbackList" resultMap="FeedbackDtoResult">
+        <include refid="SelectFeedbackDto"/>
+        ORDER BY f.date DESC
+        limit #{offset}, #{count}
+    </select>
+</mapper>

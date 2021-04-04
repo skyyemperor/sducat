@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sducat.system.mapper.SysUserMapper">
+    <resultMap id="UserResult" type="com.sducat.common.core.data.po.SysUser">
+        <!--@mbg.generated-->
+        <!--@Table sys_user-->
+        <id column="user_id" jdbcType="BIGINT" property="userId"/>
+        <result column="user_name" jdbcType="VARCHAR" property="userName"/>
+        <result column="nick_name" jdbcType="VARCHAR" property="nickName"/>
+        <result column="avatar" jdbcType="VARCHAR" property="avatar"/>
+        <result column="user_status" jdbcType="CHAR" property="status"/>
+        <result column="login_ip" jdbcType="VARCHAR" property="loginIp"/>
+        <result column="login_date" jdbcType="TIMESTAMP" property="loginDate"/>
+        <collection property="roles" javaType="java.util.List" resultMap="RoleResult"/>
+    </resultMap>
+
+    <resultMap id="RoleResult" type="com.sducat.common.core.data.po.SysRole">
+        <id column="role_id" property="roleId"/>
+        <result column="role_name" property="roleName"/>
+        <result column="role_key" property="roleKey"/>
+        <result column="role_status" property="status"/>
+    </resultMap>
+
+    <resultMap id="LessUserResult" type="com.sducat.common.core.data.dto.UserDto">
+        <id column="user_id" jdbcType="BIGINT" property="userId"/>
+        <result column="nick_name" jdbcType="VARCHAR" property="nickName"/>
+        <result column="avatar" jdbcType="VARCHAR" property="avatar"/>
+    </resultMap>
+
+    <sql id="SelectUserVo">
+        SELECT u.user_id,
+               u.user_name,
+               u.nick_name,
+               u.avatar,
+               u.status as user_status,
+               u.login_ip,
+               u.login_date,
+               r.role_id,
+               r.role_name,
+               r.role_key,
+               r.status as role_status
+        FROM sys_user u
+                     LEFT JOIN sys_user_role_link ur ON u.user_id = ur.user_id
+                     LEFT JOIN sys_role r ON ur.role_id = r.role_id AND r.status = '0'
+    </sql>
+    <select id="selectUserByUserName" resultMap="UserResult">
+        <include refid="SelectUserVo"/>
+
+        WHERE u.user_name = #{userName}
+          AND u.status = '0'
+    </select>
+    <select id="selectUserByUserId" resultMap="UserResult">
+        <include refid="SelectUserVo"/>
+
+        WHERE u.user_id = #{userId}
+          AND u.status = '0'
+    </select>
+    <select id="selectPermsByUserId" resultType="java.lang.String">
+        SELECT p.perm_key
+        FROM sys_user_role_link ur
+                     JOIN sys_role r ON r.status = '0'
+                     JOIN sys_role_perm_link rp ON ur.role_id = rp.role_id
+                     JOIN sys_perm p ON p.perm_id = rp.perm_id
+        WHERE ur.user_id = #{userId}
+          AND p.status = '0'
+    </select>
+    <select id="selectRolesByUserId" resultMap="RoleResult">
+        SELECT r.role_id,
+               r.role_name,
+               r.role_key,
+               r.status as role_status
+        FROM sys_role r
+                     JOIN sys_user_role_link ur ON ur.role_id = r.role_id
+        WHERE ur.user_id = #{userId}
+          AND r.status = '0'
+    </select>
+    <insert id="insertUserRoleLink">
+        INSERT INTO sys_user_role_link (user_id, role_id)
+        VALUES (#{userId}, #{roleId})
+    </insert>
+    <select id="selectLessUserInfoByUserId" resultMap="LessUserResult">
+        SELECT user_id, nick_name, avatar
+        FROM sys_user
+        WHERE user_id = #{userId}
+    </select>
+</mapper>

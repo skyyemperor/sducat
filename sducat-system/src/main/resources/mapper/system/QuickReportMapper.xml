@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sducat.system.mapper.QuickReportMapper">
+    <resultMap id="BaseResultMap" type="com.sducat.system.data.po.QuickReport">
+        <!--@mbg.generated-->
+        <!--@Table quick_report-->
+        <id column="report_id" jdbcType="BIGINT" property="reportId"/>
+        <result column="report_title" jdbcType="VARCHAR" property="reportTitle"/>
+        <result column="skip_type" jdbcType="VARCHAR" property="skipType"/>
+        <result column="skip_link" jdbcType="VARCHAR" property="skipLink"/>
+        <result column="skip_link_name" jdbcType="VARCHAR" property="skipLinkName"/>
+        <result column="date" jdbcType="TIMESTAMP" property="date"/>
+        <result column="status" jdbcType="TINYINT" property="status"/>
+    </resultMap>
+    <sql id="SelectQuickReport">
+        SELECT report_id,
+               report_title,
+               skip_type,
+               skip_link,
+               skip_link_name,
+               `date`,
+               `status`
+        FROM quick_report
+    </sql>
+    <update id="setAllReportsInvalid">
+        UPDATE quick_report
+        SET status = '${@com.sducat.common.constant.Constants@NO}'
+    </update>
+    <select id="getQuickReportList" resultMap="BaseResultMap">
+        <include refid="SelectQuickReport"/>
+        WHERE `status` = '${@com.sducat.common.constant.Constants@YES}'
+    </select>
+</mapper>

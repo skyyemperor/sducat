@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sducat.system.mapper.CommentLikeLinkMapper">
+    <resultMap id="BaseResultMap" type="com.sducat.system.data.po.CommentLikeLink">
+        <!--@mbg.generated-->
+        <!--@Table comment_like_link-->
+        <id column="user_id" jdbcType="BIGINT" property="userId"/>
+        <id column="comment_id" jdbcType="BIGINT" property="commentId"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        user_id, comment_id
+    </sql>
+    <select id="judge" resultMap="BaseResultMap">
+        SELECT user_id, comment_id
+        FROM comment_like_link
+        WHERE user_id = #{userId}
+          AND comment_id = #{commentId}
+    </select>
+    <insert id="likeComment">
+        INSERT INTO comment_like_link (user_id, comment_id)
+        VALUES (#{userId}, #{commentId})
+    </insert>
+    <delete id="unLikeComment">
+        DELETE
+        FROM comment_like_link
+        WHERE user_id = #{userId}
+          AND comment_id = #{commentId}
+    </delete>
+
+
+</mapper>

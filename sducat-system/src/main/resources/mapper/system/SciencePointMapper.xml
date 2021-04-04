@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sducat.system.mapper.SciencePointMapper">
+    <resultMap id="SciencePointResult" type="com.sducat.system.data.po.SciencePoint">
+        <id column="point_id" jdbcType="BIGINT" property="pointId"/>
+        <result column="module_id" jdbcType="BIGINT" property="moduleId"/>
+        <result column="title" jdbcType="VARCHAR" property="title"/>
+        <result column="content" jdbcType="VARCHAR" property="content"/>
+    </resultMap>
+
+    <select id="selectPointList" resultMap="SciencePointResult">
+        SELECT point_id,
+               module_id,
+               title,
+               content
+        FROM science_point
+        WHERE module_id = #{moduleId}
+    </select>
+</mapper>

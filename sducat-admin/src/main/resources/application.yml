@@ -1,0 +1,55 @@
+server:
+  port: 6016
+  servlet:
+    context-path: /sducat
+
+spring:
+  application:
+    name: SDUCAT
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/sducat?useUnicode=true&characterEncoding=utf-8&useSSL=false&allowMultiQueries=true&serverTimezone=GMT%2B8&zeroDateTimeBehavior=convertToNull&allowPublicKeyRetrieval=true
+    username: root
+    password: pwd
+    hikari:
+      pool-name: MyHikariCP
+      minimum-idle: 10
+      maximum-pool-size: 10
+      idle-timeout: 600000
+      max-lifetime: 800000
+      connection-timeout: 30000
+      auto-commit: true
+      connection-test-query: SELECT 1
+    dbcp2:
+      test-on-borrow: true
+      validation-query: SELECT 1
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    database: 3
+    password: pwd
+    timeout: 2000
+    lettuce:
+      pool:
+        max-idle: 20
+        min-idle: 10
+        max-active: 50
+        max-wait: 1000
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 20MB
+
+
+# MyBatis配置
+mybatis-plus:
+  # 搜索指定包别名
+  typeAliasesPackage: com.sducat.**.data.po
+  # 配置mapper的扫描，找到所有的mapper.xml映射文件
+  mapperLocations: classpath*:mapper/**/*Mapper.xml
+  configuration:
+    map-underscore-to-camel-case: true
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+

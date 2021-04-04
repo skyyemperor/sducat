@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sducat.system.mapper.CatRelationMapper">
+    <resultMap id="BaseResultMap" type="com.sducat.system.data.po.CatRelation">
+        <!--@mbg.generated-->
+        <!--@Table cat_relation-->
+        <id column="cat_id" jdbcType="BIGINT" property="catId"/>
+        <id column="relative_id" jdbcType="BIGINT" property="relativeId"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        cat_id, relative_id
+    </sql>
+    <select id="judgeRelation" resultMap="BaseResultMap">
+        SELECT cat_id, relative_id
+        FROM cat_relation
+        WHERE cat_id = #{catId}
+          AND relative_id = #{relativeId}
+    </select>
+    <insert id="addRelation">
+        INSERT INTO cat_relation (cat_id, relative_id)
+        VALUES (#{catId}, #{relativeId})
+    </insert>
+    <delete id="deleteRelation">
+        DELETE
+        FROM cat_relation
+        WHERE cat_id = #{catId}
+          AND relative_id = #{relativeId}
+    </delete>
+</mapper>

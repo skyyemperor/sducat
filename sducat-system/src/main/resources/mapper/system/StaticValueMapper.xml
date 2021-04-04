@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sducat.system.mapper.StaticValueMapper">
+    <resultMap id="BaseResultMap" type="com.sducat.system.data.po.StaticValue">
+        <!--@mbg.generated-->
+        <!--@Table static_value-->
+        <result column="key" jdbcType="VARCHAR" property="key"/>
+        <result column="value" jdbcType="VARCHAR" property="value"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        `key`, `value`
+    </sql>
+
+    <select id="getValue" resultType="java.lang.String">
+        SELECT `value`
+        FROM static_value
+        WHERE `key` = #{key}
+    </select>
+
+    <update id="setValue">
+        UPDATE static_value
+        SET `value` = #{value}
+        WHERE `key` = #{key}
+    </update>
+</mapper>

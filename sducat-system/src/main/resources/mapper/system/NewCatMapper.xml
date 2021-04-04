@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sducat.system.mapper.NewCatMapper">
+    <resultMap id="NewCatResult" type="com.sducat.system.data.po.NewCat">
+        <id column="new_cat_id" jdbcType="BIGINT" property="newCatId"/>
+        <result column="submit_user_id" jdbcType="BIGINT" property="submitUserId"/>
+        <result column="campus" jdbcType="VARCHAR" property="campus"/>
+        <result column="witness_location" jdbcType="VARCHAR" property="witnessLocation"/>
+        <result column="witness_time" jdbcType="VARCHAR" property="witnessTime"/>
+        <result column="description" jdbcType="VARCHAR" property="description"/>
+        <result column="pic" jdbcType="VARCHAR" property="pic"/>
+        <result column="submit_time" jdbcType="TIMESTAMP" property="submitTime"/>
+        <result column="checked" jdbcType="TINYINT" property="checked"/>
+    </resultMap>
+    <sql id="SelectNewCat">
+        SELECT new_cat_id,
+               submit_user_id,
+               campus,
+               witness_location,
+               witness_time,
+               description,
+               pic,
+               submit_time,
+               `checked`
+        FROM new_cat
+    </sql>
+    <select id="selectNewCatList" resultMap="NewCatResult">
+        <include refid="SelectNewCat"/>
+        ORDER BY submit_time DESC
+        limit #{offset}, #{count}
+    </select>
+</mapper>

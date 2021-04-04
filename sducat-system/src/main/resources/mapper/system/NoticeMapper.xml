@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sducat.system.mapper.NoticeMapper">
+    <resultMap id="NoticeVoResult" type="com.sducat.system.data.vo.NoticeVo">
+        <id column="notice_id" jdbcType="BIGINT" property="noticeId"/>
+        <result column="notice_user_id" jdbcType="BIGINT" property="userId"/>
+        <result column="notice_type" jdbcType="TINYINT" property="noticeType"/>
+        <result column="title" jdbcType="VARCHAR" property="title"/>
+        <result column="notice_content" jdbcType="VARCHAR" property="content"/>
+        <result column="skip_type" jdbcType="VARCHAR" property="skipType"/>
+        <result column="skip_link" jdbcType="VARCHAR" property="skipLink"/>
+        <result column="date" jdbcType="TIMESTAMP" property="date"/>
+        <result column="read" jdbcType="TINYINT" property="read"/>
+        <association property="relatedUser" resultMap="com.sducat.system.mapper.SysUserMapper.LessUserResult"/>
+        <association property="relatedComment" resultMap="com.sducat.system.mapper.CommentMapper.CommentLessVoResult"/>
+    </resultMap>
+
+    <sql id="SelectNoticeVo">
+        SELECT n.notice_id,
+               n.user_id as notice_user_id,
+               n.notice_type,
+               n.title,
+               n.content as notice_content,
+               n.skip_type,
+               n.skip_link,
+               n.date,
+               n.`read`,
+               u.user_id as user_id,
+               u.nick_name,
+               u.avatar,
+               c.comment_id,
+               c.content,
+               c.pic
+        FROM notice n
+                     LEFT JOIN sys_user u on n.related_user_id = u.user_id
+                     LEFT JOIN comment c on n.related_comment_id = c.comment_id
+    </sql>
+
+    <select id="selectNoticeVoList" resultMap="NoticeVoResult">
+        <include refid="SelectNoticeVo"/>
+        WHERE n.user_id = #{userId} AND n.notice_type = #{type}
+        ORDER BY n.date DESC
+        LIMIT #{offset}, #{count}
+    </select>
+</mapper>

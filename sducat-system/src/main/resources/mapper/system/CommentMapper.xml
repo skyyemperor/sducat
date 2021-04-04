@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sducat.system.mapper.CommentMapper">
+    <resultMap id="CommentResult" type="com.sducat.system.data.po.Comment">
+        <!--@mbg.generated-->
+        <!--@Table `comment`-->
+        <id column="comment_id" jdbcType="BIGINT" property="commentId"/>
+        <result column="parent_id" jdbcType="BIGINT" property="parentId"/>
+        <result column="cat_id" jdbcType="BIGINT" property="catId"/>
+        <result column="user_id" jdbcType="BIGINT" property="userId"/>
+        <result column="content" jdbcType="VARCHAR" property="content"/>
+        <result column="pic" jdbcType="VARCHAR" property="pic"/>
+        <result column="like" jdbcType="INTEGER" property="like"/>
+        <result column="date" jdbcType="TIMESTAMP" property="date"/>
+        <result column="status" jdbcType="TINYINT" property="status"/>
+    </resultMap>
+
+    <resultMap id="CommentVoResult" type="com.sducat.system.data.vo.CommentVo">
+        <id column="comment_id" jdbcType="BIGINT" property="commentId"/>
+        <result column="parent_id" jdbcType="BIGINT" property="parentId"/>
+        <result column="content" jdbcType="VARCHAR" property="content"/>
+        <result column="pic" jdbcType="VARCHAR" property="pic"/>
+        <result column="like" jdbcType="INTEGER" property="like"/>
+        <result column="date" jdbcType="TIMESTAMP" property="date"/>
+        <result column="status" jdbcType="TINYINT" property="status"/>
+        <result column="liked" property="liked"/>
+        <association property="user" resultMap="com.sducat.system.mapper.SysUserMapper.LessUserResult"/>
+        <association property="cat" resultMap="com.sducat.system.mapper.CatMapper.CatLessResult"/>
+    </resultMap>
+    <resultMap id="CommentLessVoResult" type="com.sducat.system.data.vo.CommentLessVo">
+        <id column="comment_id" jdbcType="BIGINT" property="commentId"/>
+        <result column="content" jdbcType="VARCHAR" property="content"/>
+        <result column="pic" jdbcType="VARCHAR" property="pic"/>
+    </resultMap>
+
+    <sql id="SelectCommentVo">
+        SELECT comment.comment_id,
+        comment.parent_id,
+        comment.cat_id,
+        comment.content,
+        comment.pic,
+        comment.`like`,
+        comment.`date`,
+        comment.status,
+        u.user_id,
+        u.nick_name,
+        u.avatar,
+        less_cat.cat_id as less_cat_id,
+        less_cat.cat_name as less_cat_name,
+        less_cat.status as less_status,
+        less_cat.sex as less_sex,
+        less_cat.birthday as less_birthday,
+        less_cat.campus as less_campus,
+        less_cat.`character` as less_character,
+        less_cat.round_pic as less_round_pic,
+        less_cat.main_pic as less_main_pic,
+        link.user_id IS NOT NULL as liked
+        FROM comment
+        LEFT JOIN sys_user u on comment.user_id = u.user_id
+        LEFT JOIN cat less_cat ON less_cat.cat_id = comment.cat_id
+        LEFT JOIN comment_like_link link on link.comment_id = comment.comment_id AND link.user_id = #{userId}
+    </sql>
+
+    <select id="selectCommentByCommentId" resultMap="CommentVoResult">
+        <include refid="SelectCommentVo"/>
+        WHERE comment.comment_id = #{commentId}
+          AND comment.status != 0
+    </select>
+
+    <select id="selectCommentList" resultMap="CommentVoResult">
+        <include refid="SelectCommentVo"/>
+        <where>
+            <if test="catId != null">
+                AND comment.cat_id = #{catId}
+            </if>
+            <!--status为猫谱或社区下时也计入，通过枚举类的配置获得;
+            这里使用abs绝对值是因为插入一条新的评论时使用对应的负数-->
+            AND (abs(comment.status) = #{status}
+                    OR
+                 abs(comment.status) = '${@com.sducat.common.enums.CommentStatusEnum@SPECTRUM_AND_COMMUNITY.getKey()}')
+        </where>
+        ORDER BY `${type.remark}` desc
+        LIMIT #{offset}, #{count}
+    </select>
+
+    <select id="countCommentList" resultType="java.lang.Integer">
+        SELECT count(comment_id)
+        FROM comment
+        <where>
+            <if test="catId != null">
+                AND cat_id = #{catId}
+            </if>
+            <!--status为猫谱或社区下时也计入，通过枚举类的配置获得;
+            这里使用abs绝对值是因为插入一条新的评论时使用对应的负数-->
+            AND (abs(comment.status) = #{status}
+                    OR
+                 abs(comment.status) = '${@com.sducat.common.enums.CommentStatusEnum@SPECTRUM_AND_COMMUNITY.getKey()}')
+        </where>
+    </select>
+    <update id="updateCommentLike">
+        UPDATE comment
+        SET `like` = `like` + #{change}
+        WHERE comment_id = #{commentId}
+    </update>
+    <select id="selectNoCheckComment" resultMap="CommentVoResult">
+        <include refid="SelectCommentVo"/>
+        ORDER BY comment.date DESC
+        LIMIT #{offset}, #{count}
+    </select>
+    <update id="checkComment">
+        UPDATE comment
+        <set>
+            <if test="pass">
+                status = -status,
+            </if>
+            <if test="!pass">
+                status=0,
+            </if>
+        </set>
+        WHERE comment_id = #{commentId}
+    </update>
+    <select id="selectPersonalCommentList" resultMap="CommentVoResult">
+        <include refid="SelectCommentVo"/>
+        WHERE u.user_id = #{userId}
+        ORDER BY comment.date DESC
+        LIMIT #{offset},#{count}
+    </select>
+    <select id="selectLikedCommentList" resultMap="CommentVoResult">
+        <include refid="SelectCommentVo"/>
+        WHERE link.user_id = #{userId}
+        ORDER BY comment.date DESC
+        LIMIT #{offset},#{count}
+    </select>
+</mapper>

@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.sducat</groupId>
+    <artifactId>sducat</artifactId>
+    <version>1.0.0</version>
+    <name>sducat</name>
+    <description>山大猫猫</description>
+
+
+    <modules>
+        <module>sducat-common</module>
+        <module>sducat-system</module>
+        <module>sducat-framework</module>
+        <module>sducat-admin</module>
+    </modules>
+    <packaging>pom</packaging>
+
+
+    <properties>
+        <java.version>1.8</java.version>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+        <fastjson.version>1.2.74</fastjson.version>
+        <okhttp.version>4.1.0</okhttp.version>
+        <jsoup.version>1.12.1</jsoup.version>
+        <mybatis.plus.version>3.4.1</mybatis.plus.version>
+        <jwt.version>0.9.1</jwt.version>
+        <commons.io.version>2.5</commons.io.version>
+        <qiniuyun.version>[7.4.0, 7.4.99]</qiniuyun.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- SpringBoot的依赖配置-->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>2.2.13.RELEASE</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>com.squareup.okhttp3</groupId>
+                <artifactId>okhttp</artifactId>
+                <version>${okhttp.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jsoup</groupId>
+                <artifactId>jsoup</artifactId>
+                <version>${jsoup.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>fastjson</artifactId>
+                <version>${fastjson.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-boot-starter</artifactId>
+                <version>${mybatis.plus.version}</version>
+            </dependency>
+
+            <!--Token生成与解析-->
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt</artifactId>
+                <version>${jwt.version}</version>
+            </dependency>
+
+            <!--七牛云 -->
+            <dependency>
+                <groupId>com.qiniu</groupId>
+                <artifactId>qiniu-java-sdk</artifactId>
+                <version>${qiniuyun.version}</version>
+            </dependency>
+
+
+            <!-- 通用工具模块 -->
+            <dependency>
+                <groupId>com.sducat</groupId>
+                <artifactId>sducat-common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- 系统模块 -->
+            <dependency>
+                <groupId>com.sducat</groupId>
+                <artifactId>sducat-system</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- 核心模块 -->
+            <dependency>
+                <groupId>com.sducat</groupId>
+                <artifactId>sducat-framework</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
