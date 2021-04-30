@@ -37,7 +37,7 @@ public class QiNiuYunPicUtil {
     private final String bucket;
     private final String domain;
 
-    private static final long EXPIRE_TIME = 5 * 24 * 3600 * 1000; //5天刷新一次
+    private static final long EXPIRE_TIME = 12 * 3600 * 1000; //12小时刷新一次
 
     private String token;
     private long refreshDate;
@@ -54,12 +54,17 @@ public class QiNiuYunPicUtil {
         this.domain = domain;
     }
 
+    public String[] getTokenAndDomain() {
+        refreshToken();
+        return new String[]{token, domain};
+    }
+
     private synchronized void refreshToken() {
         if (System.currentTimeMillis() - refreshDate > EXPIRE_TIME) {
             log.info("重新获取token中...");
             try {
-                //有效时长10天
-                token = auth.uploadToken(bucket, null, 3600 * 24 * 10, null, true);
+                //有效时长1天
+                token = auth.uploadToken(bucket, null, 3600 * 24, null, true);
                 log.info("new token: " + token);
                 refreshDate = System.currentTimeMillis();
             } catch (Exception e) {
@@ -185,7 +190,7 @@ public class QiNiuYunPicUtil {
     public boolean checkPicDomain(String... picUrls) {
         if (picUrls == null) return true;
         for (String u : picUrls) {
-            if(u == null) continue;
+            if (u == null) continue;
             if (!u.startsWith(domain))
                 return false;
         }

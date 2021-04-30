@@ -10,8 +10,8 @@ spring:
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://127.0.0.1:3306/sducat?useUnicode=true&characterEncoding=utf-8&useSSL=false&allowMultiQueries=true&serverTimezone=GMT%2B8&zeroDateTimeBehavior=convertToNull&allowPublicKeyRetrieval=true
-    username: root
-    password: pwd
+    username: abc
+    password: abc
     hikari:
       pool-name: MyHikariCP
       minimum-idle: 10
@@ -28,7 +28,7 @@ spring:
     host: 127.0.0.1
     port: 6379
     database: 3
-    password: pwd
+    password: abc
     timeout: 2000
     lettuce:
       pool:
@@ -41,7 +41,6 @@ spring:
       max-file-size: 10MB
       max-request-size: 20MB
 
-
 # MyBatis配置
 mybatis-plus:
   # 搜索指定包别名
@@ -51,5 +50,3 @@ mybatis-plus:
   configuration:
     map-underscore-to-camel-case: true
 #    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-
-

@@ -9,6 +9,8 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
 /**
@@ -22,7 +24,8 @@ public class SignFilter implements Filter {
     private static final String TIMESTAMP_HEADER = "STAMP";
 
     private static final HashSet<String> URLS = new HashSet<>(
-            Arrays.asList("/sducat/auth/login", "/sducat/auth/admin/login")
+            Arrays.asList("/sducat/auth/login", "/sducat/auth/admin/login",
+                    "/sducat/cat/info", "/sducat/cat/search")
     );
 
     @Override
@@ -37,7 +40,7 @@ public class SignFilter implements Filter {
             return;
         }
 
-        if(!verifyTime()){
+        if (!verifyTime()) {
             ServletUtil.responseResult((HttpServletResponse) servletResponse,
                     Result.getResult(CommonError.REQUEST_TIMEOUT));
             return;
@@ -89,12 +92,12 @@ public class SignFilter implements Filter {
         return cipherText.equals(desCipherText);
     }
 
-    private boolean verifyTime(){
-        //限制请求时间为10分钟内
+    private boolean verifyTime() {
+        //限制请求时间为30秒内
         String timestamp = ServletUtil.getRequest().getHeader(TIMESTAMP_HEADER);
         try {
             long timeSub = System.currentTimeMillis() - Long.parseLong(timestamp);
-            if (Math.abs(timeSub) > 300 * 1000L) {
+            if (Math.abs(timeSub) > 30 * 1000L) {
                 System.out.println("时间差：" + timeSub);
                 System.out.println(System.currentTimeMillis() + "---" + timestamp);
                 throw new RuntimeException(); //请求时间与当前时间差大于60秒
@@ -105,6 +108,24 @@ public class SignFilter implements Filter {
         }
     }
 
+    private String md5(String value) {
+        try {
+            byte[] bytes = MessageDigest.getInstance("MD5").digest(value.getBytes());
+            StringBuilder sb = new StringBuilder();
+            for (byte b : bytes) {
+                int val = b & 0xff;
+                if (val < 16) {
+                    sb.append("0").append(Integer.toHexString(val));
+                } else {
+                    sb.append(Integer.toHexString(val));
+                }
+            }
+            return sb.toString();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
 
     public static void main(String[] args) {
         //假设使用 /sducat/cat/search?status=4 这个接口
@@ -116,7 +137,9 @@ public class SignFilter implements Filter {
         Map<String, String> map = new HashMap<>();
         map.put("userName", "sducat_admin");
         map.put("password", "lovely_sducat");
+        System.out.println(new SignFilter().md5("fhbs1"));
         System.out.println(new SignFilter().encrypt(map));
+
     }
 
     /**

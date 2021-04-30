@@ -32,10 +32,6 @@ public class TokenService {
     @Value("${token.header}")
     private String header;
 
-    // 令牌秘钥
-    @Value("${token.secret}")
-    private String secret;
-
     // 令牌有效期（默认120分钟）
     @Value("${token.token_expire_time}")
     private int tokenExpireTime;
@@ -196,34 +192,6 @@ public class TokenService {
     private void setUserAgent(LoginUser loginUser) {
         String ip = IpUtils.getIpAddr(ServletUtil.getRequest());
         loginUser.setIpaddr(ip);
-    }
-
-    /**
-     * 从数据声明生成令牌
-     *
-     * @param claims 数据声明
-     * @return 令牌
-     */
-    private String sign(Map<String, Object> claims) {
-        return Jwts.builder()
-                .setClaims(claims)
-                .signWith(SignatureAlgorithm.HS512, secret)
-                .compact();
-    }
-
-    /**
-     * 从令牌中获取数据声明
-     *
-     * @param token 令牌
-     * @return 数据声明
-     */
-    private String getClaimValue(String token, String key) {
-        Claims claims = Jwts.parser()
-                .setSigningKey(secret)
-                .parseClaimsJws(token)
-                .getBody();
-
-        return claims.get(key, String.class);
     }
 
     /**

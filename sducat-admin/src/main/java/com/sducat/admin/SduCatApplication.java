@@ -14,7 +14,7 @@ import java.io.File;
 @MapperScan("com.sducat.*.mapper")
 public class SduCatApplication {
     public static void main(String[] args) {
-        System.setProperty("spring.config.additional-location", "./config/");
+        System.setProperty("spring.config.additional-location", "./config/,${user.home}/.sducat/");
 
         SpringApplication.run(SduCatApplication.class, args);
     }

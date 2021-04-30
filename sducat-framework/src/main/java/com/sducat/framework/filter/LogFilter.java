@@ -30,8 +30,8 @@ public class LogFilter implements Filter {
         StringBuilder param = new StringBuilder();
         param.append("Content-Type").append(":").append(request.getHeader("Content-Type")).append("\n");
         param.append("TOKEN").append(":").append(request.getHeader("TOKEN")).append("\n");
-//        param.append("STAMP").append(":").append(request.getHeader("STAMP")).append("\n");
-//        param.append("SIGN").append(":").append(request.getHeader("SIGN")).append("\n");
+        param.append("STAMP").append(":").append(request.getHeader("STAMP")).append("\n");
+        param.append("SIGN").append(":").append(request.getHeader("SIGN")).append("\n");
         for (Map.Entry<String, String> entry : allParameters.entrySet()) {
             param.append(entry.getKey()).append(":").append(entry.getValue()).append("\n");
         }

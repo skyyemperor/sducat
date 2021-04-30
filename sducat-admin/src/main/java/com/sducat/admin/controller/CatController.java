@@ -46,29 +46,6 @@ public class CatController {
     @Autowired
     private QiNiuYunPicUtil qiNiuYunPicUtil;
 
-
-//    public void tt() {
-//        ExcelUtil.setExcelFile("F:\\others\\Desktop\\aatmp\\洪楼.xlsx", "整理后");
-//        for (int i = 1; i <= 49; i++) {
-//            Cat cat = new Cat();
-//            cat.setCatName(ExcelUtil.getCellData(i, 1));
-//            cat.setCampus("洪家楼校区");
-//            cat.setSex(ExcelUtil.getCellData(i, 4));
-//            cat.setUsualPlace(ExcelUtil.getCellData(i, 6));
-//            cat.setStatus(CatStatusEnum.getEnum(ExcelUtil.getCellData(i, 7)).getKey());
-//            cat.setVaccination(ExcelUtil.getCellData(i, 8).contains("未") ? 0 : 1);
-//            cat.setSterilization(ExcelUtil.getCellData(i, 9).contains("未") ? 0 : 1);
-//            cat.setShape(ExcelUtil.getCellData(i, 11));
-//            cat.setColor(ExcelUtil.getCellData(i, 12));
-//            cat.setCharacter(ExcelUtil.getCellData(i, 13));
-//            cat.setHealth(ExcelUtil.getCellData(i, 14));
-//            cat.setRelation(ExcelUtil.getCellData(i, 15));
-//            cat.setNote(ExcelUtil.getCellData(i, 16));
-//            System.out.println(cat);
-//            catService.addCat(cat);
-//        }
-//    }
-
     /**
      * 获取猫咪详细信息
      */

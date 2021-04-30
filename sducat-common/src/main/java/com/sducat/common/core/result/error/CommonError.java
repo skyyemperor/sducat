@@ -10,7 +10,7 @@ public enum CommonError implements ResultError {
     METHOD_NOT_ALLOW(40005, "方法不允许"),
     PARAM_FORMAT_WRONG(40006, "参数范围或格式错误"),
     VERIFY_WRONG(40007, "参数校验失败"),
-    REQUEST_TIMEOUT(40008, "请求超时"),
+    REQUEST_TIMEOUT(40008, "请求时间校验失败"),
     THIS_IS_LAST_PAGE(40009, "再怎么找也没有啦"),
     THIS_IS_FIRST_PAGE(40010, "没有上一页啦"),
     PIC_UPLOAD_WRONG(40011, "图片上传失败"),

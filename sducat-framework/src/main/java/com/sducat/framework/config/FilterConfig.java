@@ -24,15 +24,15 @@ public class FilterConfig {
         return registration;
     }
 
-//    @Bean
-//    @SuppressWarnings({"rawtypes", "unchecked"})
-//    public FilterRegistrationBean signFilterRegistration() {
-//        FilterRegistrationBean registration = new FilterRegistrationBean();
-//        registration.setFilter(new SignFilter());
-//        registration.addUrlPatterns("/*");
-//        registration.setName("signFilter");
-//        registration.setOrder(2);
-//        return registration;
-//    }
+    @Bean
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public FilterRegistrationBean signFilterRegistration() {
+        FilterRegistrationBean registration = new FilterRegistrationBean();
+        registration.setFilter(new SignFilter());
+        registration.addUrlPatterns("/*");
+        registration.setName("signFilter");
+        registration.setOrder(2);
+        return registration;
+    }
 
 }
