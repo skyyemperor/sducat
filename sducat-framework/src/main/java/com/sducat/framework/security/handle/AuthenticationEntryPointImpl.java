@@ -1,6 +1,6 @@
 package com.sducat.framework.security.handle;
 
-import com.sducat.common.core.result.error.CommonError;
+import com.sducat.common.core.result.CommonError;
 import com.sducat.common.core.result.Result;
 import com.sducat.common.util.ServletUtil;
 import org.springframework.security.core.AuthenticationException;

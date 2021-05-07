@@ -30,7 +30,7 @@ public interface CatService extends IService<Cat> {
 
     boolean updateCat(Cat cat);
 
-    List<CatLessDto> searchCat(String catName, String campus, CatStatusEnum status, String color,Integer pageNum,Integer pageSize);
+    List<CatLessDto> searchCat(String catName, String campus, CatStatusEnum status, String color, Integer pageNum, Integer pageSize);
 
     /**
      * 获取待领养猫咪列表
@@ -59,9 +59,10 @@ public interface CatService extends IService<Cat> {
 
     /**
      * 审核反馈
+     *
      * @param feedbackId 反馈ID
-     * @param reason 反馈未通过的原因
-     * @param checked 是否通过
+     * @param reason     反馈未通过的原因
+     * @param checked    是否通过
      */
     Result checkFeedback(Long feedbackId, String reason, boolean checked);
 
@@ -77,9 +78,10 @@ public interface CatService extends IService<Cat> {
 
     /**
      * 审核新猫
+     *
      * @param newCatId 新猫ID
-     * @param catId 已上新的猫咪ID
-     * @param checked 审核是否通过
+     * @param catId    已上新的猫咪ID
+     * @param checked  审核是否通过
      */
     Result checkNewCat(Long newCatId, Long catId, boolean checked);
 }

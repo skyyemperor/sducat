@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 public class OkHttpUtil {
     private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
-    private static OkHttpUtil instance;
+    private static volatile OkHttpUtil instance;
 
     private OkHttpClient client;
 
@@ -41,7 +41,6 @@ public class OkHttpUtil {
      * get请求，同步方式
      */
     public String getData(String url, Map<String, Object> bodyMap, Map<String, Object> headerMap) {
-        //1 构造Request
         Request.Builder builder = new Request.Builder().get().url(buildHttpGet(url, bodyMap));
         addHeaders(builder, headerMap);
         Request request = builder.build();

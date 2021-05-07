@@ -1,5 +1,6 @@
 package com.sducat.admin.controller;
 
+import com.sducat.common.core.redis.RedisCache;
 import com.sducat.common.core.result.error.AuthError;
 import com.sducat.common.core.result.Result;
 import com.sducat.common.util.MapBuildUtil;
@@ -23,6 +24,14 @@ public class AuthController {
 
     @Autowired
     private QiNiuYunPicUtil qiNiuYunPicUtil;
+
+    @Autowired
+    private RedisCache redisCache;
+
+//    @RequestMapping("/test")
+//    public String test() {
+//        return "test";
+//    }
 
     /**
      * 登录方法

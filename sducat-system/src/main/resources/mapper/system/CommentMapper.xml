@@ -75,11 +75,12 @@
             </if>
             <!--status为猫谱或社区下时也计入，通过枚举类的配置获得;
             这里使用abs绝对值是因为插入一条新的评论时使用对应的负数-->
-            AND (abs(comment.status) = #{status}
+            AND (comment.status = #{status}
                     OR
-                 abs(comment.status) = '${@com.sducat.common.enums.CommentStatusEnum@SPECTRUM_AND_COMMUNITY.getKey()}')
+                 comment.status = '${@com.sducat.common.enums.CommentStatusEnum@SPECTRUM_AND_COMMUNITY.getKey()}')
         </where>
-        ORDER BY `${type.remark}` desc
+
+                ORDER BY `${type.remark}` desc
         LIMIT #{offset}, #{count}
     </select>
 
@@ -91,10 +92,11 @@
                 AND cat_id = #{catId}
             </if>
             <!--status为猫谱或社区下时也计入，通过枚举类的配置获得;
-            这里使用abs绝对值是因为插入一条新的评论时使用对应的负数-->
-            AND (abs(comment.status) = #{status}
+            这里使用abs绝对值是因为插入一条新的评论时使用对应的负数
+            不使用abs，表示先审核再放出评论-->
+            AND (comment.status = #{status}
                     OR
-                 abs(comment.status) = '${@com.sducat.common.enums.CommentStatusEnum@SPECTRUM_AND_COMMUNITY.getKey()}')
+                 comment.status = '${@com.sducat.common.enums.CommentStatusEnum@SPECTRUM_AND_COMMUNITY.getKey()}')
         </where>
     </select>
     <update id="updateCommentLike">
@@ -122,6 +124,7 @@
     <select id="selectPersonalCommentList" resultMap="CommentVoResult">
         <include refid="SelectCommentVo"/>
         WHERE u.user_id = #{userId}
+          AND comment.status > 0
         ORDER BY comment.date DESC
         LIMIT #{offset},#{count}
     </select>

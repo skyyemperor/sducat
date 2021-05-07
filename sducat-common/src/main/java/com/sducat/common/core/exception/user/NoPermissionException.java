@@ -1,7 +1,7 @@
 package com.sducat.common.core.exception.user;
 
 import com.sducat.common.core.exception.BaseException;
-import com.sducat.common.core.result.error.CommonError;
+import com.sducat.common.core.result.CommonError;
 
 /**
  * Created by skyyemperor on 2021-02-03 22:58

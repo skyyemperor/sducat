@@ -1,4 +1,4 @@
-package com.sducat.common.core.result.error;
+package com.sducat.common.core.result;
 
 import com.sducat.common.constant.Constants;
 import com.sducat.common.core.result.ResultError;

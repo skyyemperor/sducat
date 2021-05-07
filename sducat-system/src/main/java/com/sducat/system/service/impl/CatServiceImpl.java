@@ -1,11 +1,11 @@
 package com.sducat.system.service.impl;
 
 import com.sducat.common.constant.Constants;
-import com.sducat.common.core.result.error.CommonError;
+import com.sducat.common.core.redis.RedisCache;
+import com.sducat.common.core.result.CommonError;
 import com.sducat.common.core.result.Result;
 import com.sducat.common.core.result.error.CatError;
 import com.sducat.common.enums.CatStatusEnum;
-import com.sducat.common.util.QiNiuYunPicUtil;
 import com.sducat.common.util.StringUtil;
 import com.sducat.common.util.TaskExecutorUtil;
 import com.sducat.system.data.dto.CatAdoptDto;
@@ -20,10 +20,12 @@ import com.sducat.system.mapper.CatRelationMapper;
 import com.sducat.system.mapper.NewCatMapper;
 import com.sducat.system.service.NoticeService;
 import com.sducat.system.service.SysUserService;
+import org.apache.commons.lang3.ThreadUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -59,14 +61,21 @@ public class CatServiceImpl extends ServiceImpl<CatMapper, Cat> implements CatSe
     @Autowired
     private TaskExecutorUtil<?> taskExecutorUtil;
 
-    /**
-     * 最大图片数量
-     */
-    private static final int MAX_PIC_COUNT = 10;
+    @Autowired
+    private RedisCache redisCache;
 
     @Override
     public Cat getCatInfo(Long catId) {
-        return catMapper.selectCatByCatId(catId);
+        Cat cat;
+        String catInfoRedisKey = Constants.CAT_IFO_REDIS_KEY + catId;
+        //首先到redis查询
+        if ((cat = redisCache.getObject(catInfoRedisKey)) != null) return cat;
+
+        cat = catMapper.selectCatByCatId(catId);
+
+        //异步更新redis
+        redisCache.setObjectAsync(catInfoRedisKey, cat);
+        return cat;
     }
 
     @Override
@@ -76,19 +85,38 @@ public class CatServiceImpl extends ServiceImpl<CatMapper, Cat> implements CatSe
 
     @Override
     public boolean updateCat(Cat cat) {
-        return this.updateById(cat);
+        String catInfoRedisKey = Constants.CAT_IFO_REDIS_KEY + cat.getCatId();
+        boolean ans = this.updateById(cat); //1.删除数据库数据
+        redisCache.deleteObject(catInfoRedisKey); //2.后删缓存
+        taskExecutorUtil.run(() -> {  //3.延时删除缓存。防止双写不一致情况发生
+            try {
+                Thread.sleep(1000); //睡1秒
+            } catch (InterruptedException e) { //to do nothing
+            }
+            redisCache.deleteObject(catInfoRedisKey);
+        });
+        return ans;
     }
 
     @Override
     public List<CatLessDto> searchCat(String catName, String campus, CatStatusEnum status, String color, Integer pageNum, Integer pageSize) {
         if (catName != null && !"".equals(catName)) {
             //在字符中间隔插入'%',模糊搜索
-            catName = catName.replace(" ", "");
-            catName = StringUtil.join(catName.toCharArray(), "%");
+            catName = catName.replaceAll(" ", "");
+            catName = "%" + StringUtil.join(catName.toCharArray(), "%") + "%";
         }
 
+        List<CatLessDto> catLessDtos;
+        String searchCatRedisKey = Constants.SEARCH_CAT_REDIS_KEY + catName + campus + status + color + pageNum + "," + pageSize;
+        //首先在redis中查询
+        if ((catLessDtos = redisCache.getObject(searchCatRedisKey)) != null) return catLessDtos;
+
         List<Cat> cats = catMapper.searchCat(catName, campus, status, color, (pageNum - 1) * pageSize, pageSize);
-        return cats.stream().map(CatLessDto::getDto).collect(Collectors.toList());
+        catLessDtos = cats.stream().map(CatLessDto::getDto).collect(Collectors.toList());
+
+        //将结果存入redis
+        redisCache.setObjectAsync(searchCatRedisKey, catLessDtos, 2, TimeUnit.DAYS);
+        return catLessDtos;
     }
 
     @Override

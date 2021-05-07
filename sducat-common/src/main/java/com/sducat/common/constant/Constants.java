@@ -50,7 +50,6 @@ public class Constants {
      */
     public static final String TOKEN_REDIS_KEY = "sducat:token:";
 
-
     /**
      * refresh_token redis key
      */
@@ -62,13 +61,14 @@ public class Constants {
     public static final String USER_INFO_REDIS_KEY = "sducat:user:";
 
     /**
-     * 令牌前缀
+     * 搜索猫咪 redis key
      */
-    public static final String LOGIN_TOKEN_KEY = "login_token_key";
+    public static final String SEARCH_CAT_REDIS_KEY = "sducat:cat:search:";
 
     /**
-     * 令牌前缀
+     * 猫咪详细信息 redis key
      */
-    public static final String LOGIN_REFRESH_TOKEN_KEY = "login_refresh_token_key";
+    public static final String CAT_IFO_REDIS_KEY = "sducat:cat:info:";
+
 
 }

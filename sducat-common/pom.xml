@@ -55,6 +55,12 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-pool2</artifactId>
         </dependency>
+<!--        &lt;!&ndash; redis集群使用 &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            &lt;!&ndash; springboot的parents依赖中有对版本号的控制，此处不需要添加版本号相关信息 &ndash;&gt;-->
+<!--            <groupId>redis.clients</groupId>-->
+<!--            <artifactId>jedis</artifactId>-->
+<!--        </dependency>-->
 
         <!-- servlet包 -->
         <dependency>

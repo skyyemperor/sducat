@@ -1,5 +1,6 @@
 package com.sducat.common.core.redis;
 
+import com.sducat.common.util.TaskExecutorUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.BoundSetOperations;
 import org.springframework.data.redis.core.HashOperations;
@@ -19,6 +20,9 @@ public class RedisCache {
     @Autowired
     public RedisTemplate redisTemplate;
 
+    @Autowired
+    private TaskExecutorUtil<?> taskExecutorUtil;
+
     /**
      * 缓存基本的对象，Integer、String、实体类等
      *
@@ -30,15 +34,24 @@ public class RedisCache {
     }
 
     /**
-     * 缓存基本的对象，Integer、String、实体类等
-     *
-     * @param key      缓存的键值
-     * @param value    缓存的值
-     * @param timeout  时间
-     * @param timeUnit 时间颗粒度
+     * 异步缓存基本的对象
+     */
+    public <T> void setObjectAsync(final String key, final T value) {
+        taskExecutorUtil.run(() -> redisTemplate.opsForValue().set(key, value));
+    }
+
+    /**
+     * 缓存基本的对象
      */
     public <T> void setObject(final String key, final T value, final long timeout, final TimeUnit timeUnit) {
         redisTemplate.opsForValue().set(key, value, timeout, timeUnit);
+    }
+
+    /**
+     * 缓存基本的对象
+     */
+    public <T> void setObjectAsync(final String key, final T value, final long timeout, final TimeUnit timeUnit) {
+        taskExecutorUtil.run(() -> redisTemplate.opsForValue().set(key, value, timeout, timeUnit));
     }
 
     /**

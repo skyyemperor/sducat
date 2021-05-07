@@ -1,15 +1,12 @@
 package com.sducat.admin.controller;
 
 import com.sducat.common.core.result.Result;
-import com.sducat.common.core.result.error.CommonError;
+import com.sducat.common.core.result.CommonError;
 import com.sducat.common.util.QiNiuYunPicUtil;
-import com.sducat.system.data.po.Donation;
 import com.sducat.system.service.DonationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * Created by skyyemperor on 2021-03-09

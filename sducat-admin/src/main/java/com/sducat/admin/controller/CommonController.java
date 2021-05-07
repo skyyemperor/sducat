@@ -1,6 +1,6 @@
 package com.sducat.admin.controller;
 
-import com.sducat.common.core.result.error.CommonError;
+import com.sducat.common.core.result.CommonError;
 import com.sducat.common.core.result.Result;
 import com.sducat.common.util.MapBuildUtil;
 import com.sducat.common.util.QiNiuYunPicUtil;

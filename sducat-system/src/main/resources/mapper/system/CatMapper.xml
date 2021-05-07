@@ -105,7 +105,7 @@
         <include refid="SelectCatLessVo"/>
         <where>
             <if test="catName != null and catName != ''">
-                AND cat_name like concat('%', #{catName}, '%')
+                AND cat_name like #{catName}
             </if>
             <if test="campus != null and campus != ''">
                 AND campus = #{campus}

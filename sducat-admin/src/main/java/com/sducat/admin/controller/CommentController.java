@@ -2,7 +2,7 @@ package com.sducat.admin.controller;
 
 import com.sducat.common.annotation.validation.EnumValidation;
 import com.sducat.common.constant.Constants;
-import com.sducat.common.core.result.error.CommonError;
+import com.sducat.common.core.result.CommonError;
 import com.sducat.common.core.result.Result;
 import com.sducat.common.core.result.error.CommentError;
 import com.sducat.common.enums.CommentCheckTypeEnum;
@@ -55,7 +55,7 @@ public class CommentController {
             @Min(1) @RequestParam(defaultValue = "1") Integer pageNum,
             @Min(0) @RequestParam(defaultValue = "10") Integer pageSize,
             @EnumValidation(clazz = CommentListTypeEnum.class, message = "排序类型只能为：1(发布时间)，2(点赞量)")
-            @RequestParam Integer type) {
+            @RequestParam(defaultValue = "1") Integer type) {
         return commentService.getCommentList(tokenService.getUserId(), catId, CommentStatusEnum.SPECTRUM.getKey(),
                 pageNum, pageSize, CommentListTypeEnum.getEnum(type));
     }
@@ -68,7 +68,7 @@ public class CommentController {
             @Min(1) @RequestParam(defaultValue = "1") Integer pageNum,
             @Min(0) @RequestParam(defaultValue = "10") Integer pageSize,
             @EnumValidation(clazz = CommentListTypeEnum.class, message = "排序类型只能为：1(发布时间)，2(点赞量)")
-            @RequestParam Integer type) {
+            @RequestParam(defaultValue = "1") Integer type) {
         return commentService.getCommentList(tokenService.getUserId(), null, CommentStatusEnum.COMMUNITY.getKey(),
                 pageNum, pageSize, CommentListTypeEnum.getEnum(type));
     }

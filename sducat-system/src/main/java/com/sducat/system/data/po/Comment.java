@@ -68,7 +68,7 @@ public class Comment implements Serializable {
     private Date date;
 
     /**
-     * 类型，0违规，1猫谱，2社区，3猫谱和社区
+     * 类型，0违规，1猫谱，2社区，3猫谱和社区，未审核的评论为负数
      */
     @TableField(value = "`status`")
     private Integer status;

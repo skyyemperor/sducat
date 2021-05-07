@@ -2,7 +2,7 @@ package com.sducat.system.service.impl;
 
 import com.sducat.common.constant.Constants;
 import com.sducat.common.core.result.Result;
-import com.sducat.common.core.result.error.CommonError;
+import com.sducat.common.core.result.CommonError;
 import com.sducat.common.core.result.error.NoticeError;
 import com.sducat.common.util.TaskExecutorUtil;
 import com.sducat.system.data.dto.NoticeDto;

@@ -1,6 +1,6 @@
 package com.sducat.system.service.impl;
 
-import com.sducat.common.core.result.error.CommonError;
+import com.sducat.common.core.result.CommonError;
 import com.sducat.common.core.result.Result;
 import com.sducat.common.core.result.error.CatError;
 import com.sducat.common.core.result.error.CommentError;
@@ -12,15 +12,11 @@ import com.sducat.common.util.MapBuildUtil;
 import com.sducat.common.util.QiNiuYunPicUtil;
 import com.sducat.common.util.TaskExecutorUtil;
 import com.sducat.system.data.dto.CommentDto;
-import com.sducat.system.data.po.notice.CommentBeLikedNotice;
-import com.sducat.system.data.po.notice.CommentCheckFailNotice;
-import com.sducat.system.data.po.notice.CommentMentionNewCatNotice;
-import com.sducat.system.data.po.notice.CommentMentionOldCatNotice;
+import com.sducat.system.data.po.notice.*;
 import com.sducat.system.data.vo.CommentVo;
 import com.sducat.system.mapper.CommentLikeLinkMapper;
 import com.sducat.system.service.CatService;
 import com.sducat.system.service.NoticeService;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -216,6 +212,9 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
                 break;
             case CHECK_SUCCESS:
                 comment.setStatus(Math.abs(comment.getStatus())); //审核通过，状态设为正数
+                noticeService.addNotice(new CommentCheckSuccessNotice(
+                        comment.getUserId(), commentId.toString(), comment.getDate()
+                ));
                 break;
             case MENTION_OLD_CAT:
                 if (catId == null || catService.getCatInfo(catId) == null)

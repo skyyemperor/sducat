@@ -11,28 +11,25 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cache.annotation.CachingConfigurerSupport;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.connection.RedisPassword;
-import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
+import org.springframework.data.redis.connection.*;
 import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettucePoolingClientConfiguration;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.SerializationException;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.util.Assert;
 
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * redis配置
@@ -41,17 +38,24 @@ import java.time.Duration;
 @EnableCaching
 public class RedisConfig {
 
-    @Value("${spring.redis.database}")
-    private int database;
-
     @Value("${spring.redis.host}")
     private String host;
+
+    @Value("${spring.redis.port}")
+    private int port;
+
+    @Value("${spring.redis.database}")
+    private int database;
 
     @Value("${spring.redis.password}")
     private String password;
 
-    @Value("${spring.redis.port}")
-    private int port;
+    //redis哨兵集群配置
+//    @Value("#{'${spring.redis.sentinel.nodes}'.split(',')}")
+//    private Set<String> sentinelCluster;
+//
+//    @Value("${spring.redis.sentinel.master}")
+//    private String sentinelName;
 
     @Value("${spring.redis.timeout}")
     private long timeout;
@@ -83,9 +87,11 @@ public class RedisConfig {
         configuration.setDatabase(database);
         configuration.setPassword(RedisPassword.of(password));
         //哨兵模式
-        //RedisSentinelConfiguration configuration1 = new RedisSentinelConfiguration();
-        //集群模式
-        //RedisClusterConfiguration configuration2 = new RedisClusterConfiguration();
+//        RedisSentinelConfiguration configuration = new RedisSentinelConfiguration(sentinelName, sentinelCluster);
+//        configuration.setDatabase(database);
+//        configuration.setPassword(RedisPassword.of(password));
+//        // 集群模式
+//        // RedisClusterConfiguration configuration2 = new RedisClusterConfiguration();
 
         LettuceClientConfiguration clientConfig = LettucePoolingClientConfiguration.builder()
                 .commandTimeout(Duration.ofMillis(timeout))

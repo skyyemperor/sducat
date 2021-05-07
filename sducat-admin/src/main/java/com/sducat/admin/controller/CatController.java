@@ -2,12 +2,11 @@ package com.sducat.admin.controller;
 
 import com.sducat.common.annotation.validation.EnumValidation;
 import com.sducat.common.constant.Constants;
-import com.sducat.common.core.result.error.CommonError;
+import com.sducat.common.core.result.CommonError;
 import com.sducat.common.core.result.Result;
 import com.sducat.common.core.result.error.CatError;
 import com.sducat.common.enums.CampusEnum;
 import com.sducat.common.enums.CatStatusEnum;
-import com.sducat.common.util.ExcelUtil;
 import com.sducat.common.util.JSONUtil;
 import com.sducat.common.util.QiNiuYunPicUtil;
 import com.sducat.common.util.StringUtil;
@@ -26,7 +25,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
 import java.util.*;
@@ -228,7 +226,7 @@ public class CatController {
     }
 
     /**
-     * 检查图片格式
+     * 检查输入格式
      */
     private Result checkCatParam(Cat cat) {
         List<String> pics = new ArrayList<>();
