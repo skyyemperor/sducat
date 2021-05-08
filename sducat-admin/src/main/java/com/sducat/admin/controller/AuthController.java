@@ -10,6 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by skyyemperor on 2021-01-29 0:09
  * Description :
@@ -30,7 +33,8 @@ public class AuthController {
 
 //    @RequestMapping("/test")
 //    public String test() {
-//        return "test";
+//       return likeOrUnlikeRedis().toString();
+////        return "test";
 //    }
 
     /**

@@ -73,23 +73,10 @@ public class Comment implements Serializable {
     @TableField(value = "`status`")
     private Integer status;
 
+    public Comment(Long commentId, Integer like) {
+        this.commentId = commentId;
+        this.like = like;
+    }
+
     private static final long serialVersionUID = 1L;
-
-    public static final String COL_COMMENT_ID = "comment_id";
-
-    public static final String COL_PARENT_ID = "parent_id";
-
-    public static final String COL_CAT_ID = "cat_id";
-
-    public static final String COL_USER_ID = "user_id";
-
-    public static final String COL_CONTENT = "content";
-
-    public static final String COL_PIC = "pic";
-
-    public static final String COL_LIKE = "`like`";
-
-    public static final String COL_DATE = "`date`";
-
-    public static final String COL_STATUS = "`status`";
 }

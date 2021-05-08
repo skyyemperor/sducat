@@ -1,5 +1,7 @@
 package com.sducat.system.service.impl;
 
+import com.sducat.common.constant.Constants;
+import com.sducat.common.core.redis.RedisCache;
 import com.sducat.common.core.result.CommonError;
 import com.sducat.common.core.result.Result;
 import com.sducat.common.core.result.error.CatError;
@@ -20,6 +22,7 @@ import com.sducat.system.service.NoticeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -54,6 +57,13 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
 
     @Autowired
     private TaskExecutorUtil<?> taskExecutorUtil;
+
+    @Autowired
+    private RedisCache redisCache;
+
+    private static final String LIKE_OR_UNLIKE_LUA = "if redis.call('sismember', KEYS[1], KEYS[2]) == 1 " +
+            "then redis.call('srem', KEYS[1], KEYS[2]) return 0 " +
+            "else redis.call('sadd', KEYS[1], KEYS[2]) return 1 end";
 
     @Override
     public CommentVo getCommentInfo(Long userId, Long commentId) {
@@ -153,33 +163,45 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
     }
 
     @Override
-    @Transactional
     public Result likeOrUnlikeComment(Long userId, Long commentId) {
-        //判断评论是否存在
+        // 判断评论是否存在
         CommentVo comment = getCommentInfo(userId, commentId);
         if (comment == null)
             return Result.getResult(CommentError.COMMENT_NOT_EXIST);
 
-        if (judgeCommentLike(userId, commentId)) {
-            //已经点过赞，下面为取消点赞
-            likeLinkMapper.unLikeComment(userId, commentId);
-            commentMapper.updateCommentLike(commentId, -1);
-            comment.setLike(comment.getLike() - 1);
-        } else {
-            //没有点过赞
-            likeLinkMapper.likeComment(userId, commentId);
-            commentMapper.updateCommentLike(commentId, 1);
-            comment.setLike(comment.getLike() + 1);
-            //发送点赞通知
-            noticeService.addNotice(new CommentBeLikedNotice(
-                    comment.getUser().getUserId(), commentId.toString(), userId, commentId
-            ));
-        }
+        // 在redis中执行点赞或取消点赞操作。若为点赞，则返回1；若为取消点赞，则返回0
+        String commentSetRedisKey = Constants.COMMENT_SET_REDIS_KEY + commentId;
+        Long liked = redisCache.executeLUA(LIKE_OR_UNLIKE_LUA, commentSetRedisKey, userId.toString());
+
+        // 异步更新mysql的点赞信息
+        asyncUpdateMysqlLikeInfo(userId, comment, liked);
+
         return Result.success(MapBuildUtil.builder()
                 .data("commentId", commentId)
-                .data("like", comment.getLike())
-                .data("liked", !comment.getLiked())
+                .data("liked", liked)
                 .get());
+    }
+
+    /**
+     * 异步更新mysql的点赞信息，并发送通知
+     */
+    private void asyncUpdateMysqlLikeInfo(Long userId, CommentVo comment, Long liked) {
+        taskExecutorUtil.run(() -> {
+            // 获取总点赞数，并更新至mysql
+            String commentSetRedisKey = Constants.COMMENT_SET_REDIS_KEY + comment.getCommentId();
+            Long likeNum = redisCache.getSetSize(commentSetRedisKey);
+            commentMapper.updateById(new Comment(comment.getCommentId(), likeNum.intValue()));
+
+            if (liked == 1) { //点赞成功，下面在mysql中插入点赞结果
+                likeLinkMapper.likeComment(userId, comment.getCommentId());
+                //发送点赞通知
+                noticeService.addNotice(new CommentBeLikedNotice(
+                        comment.getUser().getUserId(), comment.getCommentId().toString(), userId, comment.getCommentId()
+                ));
+            } else if (liked == 0) { //取消点赞成功，更新mysql
+                likeLinkMapper.unLikeComment(userId, comment.getCommentId());
+            }
+        });
     }
 
     @Override

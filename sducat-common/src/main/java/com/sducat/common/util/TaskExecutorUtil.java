@@ -19,7 +19,7 @@ public class TaskExecutorUtil<C> {
     };
 
     private static final ThreadPoolExecutor cachePool = new ThreadPoolExecutor(
-            1, 8,
+            2, 10,
             60L, TimeUnit.SECONDS,
             new SynchronousQueue<Runnable>(),
             factory

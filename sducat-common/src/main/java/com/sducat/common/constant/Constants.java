@@ -70,5 +70,10 @@ public class Constants {
      */
     public static final String CAT_IFO_REDIS_KEY = "sducat:cat:info:";
 
+    /**
+     * 评论点赞set redis key
+     */
+    public static final String COMMENT_SET_REDIS_KEY = "sducat:comment:set:";
+
 
 }

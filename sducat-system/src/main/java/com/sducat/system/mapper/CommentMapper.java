@@ -36,9 +36,6 @@ public interface CommentMapper extends BaseMapper<Comment> {
     Integer countCommentList(@Param("catId") Long catId,
                              @Param("status") Integer status);
 
-    Integer updateCommentLike(@Param("commentId") Long commentId,
-                              @Param("change") Integer change);
-
     List<CommentVo> selectNoCheckComment(@Param("userId") Long userId,
                                          @Param("offset") Integer offset,
                                          @Param("count") Integer count);

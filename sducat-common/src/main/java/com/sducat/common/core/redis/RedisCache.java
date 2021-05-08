@@ -6,6 +6,8 @@ import org.springframework.data.redis.core.BoundSetOperations;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
+import org.springframework.scripting.support.StaticScriptSource;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -147,12 +149,16 @@ public class RedisCache {
 
     /**
      * 获得缓存的set
-     *
-     * @param key
-     * @return
      */
     public <T> Set<T> getSet(final String key) {
         return redisTemplate.opsForSet().members(key);
+    }
+
+    /**
+     * 获取set的元素个数
+     */
+    public Long getSetSize(final String key) {
+        return redisTemplate.opsForSet().size(key);
     }
 
     /**
@@ -198,6 +204,13 @@ public class RedisCache {
     public <T> T getMapValue(final String key, final String hKey) {
         HashOperations<String, String, T> opsForHash = redisTemplate.opsForHash();
         return opsForHash.get(key, hKey);
+    }
+
+    public Long executeLUA(final String LUA, String... keys) {
+        DefaultRedisScript<Long> script = new DefaultRedisScript<>();
+        script.setResultType(Long.class);
+        script.setScriptSource(new StaticScriptSource(LUA));
+        return (Long) redisTemplate.execute(script, Arrays.asList(keys));
     }
 
 }
