@@ -50,8 +50,6 @@ public class DonationController {
     @PreAuthorize("@pms.hasPerm('donation:*:modify')")
     @PostMapping("/qrcode/update")
     public Result updateQRCode(@RequestParam String pic){
-        if (!qiNiuYunPicUtil.checkPicDomain(pic))
-            return Result.getResult(CommonError.PIC_DOMAIN_WRONG);
         donationService.updateQRCode(pic);
         return Result.success();
     }

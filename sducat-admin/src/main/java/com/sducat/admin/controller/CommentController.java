@@ -8,6 +8,7 @@ import com.sducat.common.core.result.error.CommentError;
 import com.sducat.common.enums.CommentCheckTypeEnum;
 import com.sducat.common.enums.CommentListTypeEnum;
 import com.sducat.common.enums.CommentStatusEnum;
+import com.sducat.common.util.PicUtil;
 import com.sducat.common.util.QiNiuYunPicUtil;
 import com.sducat.framework.service.TokenService;
 import com.sducat.system.data.dto.CommentDto;
@@ -37,7 +38,7 @@ public class CommentController {
     private TokenService tokenService;
 
     @Autowired
-    private QiNiuYunPicUtil qiNiuYunPicUtil;
+    private PicUtil picUtil;
 
     @GetMapping("/info/{commentId}")
     public Result getCommentInfo(@PathVariable Long commentId) {
@@ -114,10 +115,10 @@ public class CommentController {
                                           @RequestParam(defaultValue = "false") boolean syncCommunity) {
         if (pic != null && pic.length > Constants.PIC_MAX_NUM)
             return Result.getResult(CommonError.PIC_NUM_EXCEED_MAX);
-        if (!qiNiuYunPicUtil.checkPicDomain(pic))
-            return Result.getResult(CommonError.PIC_DOMAIN_WRONG);
         if (content.length() == 0 && (pic == null || pic.length == 0))
             return Result.getResult(CommentError.PARAM_CAN_NOT_EMPTY);
+        if (!picUtil.checkPicHost(pic))
+            return Result.getResult(CommonError.PARAM_FORMAT_WRONG);
 
         return commentService.addSpectrumComment(userId, catId, content, pic, syncCommunity);
     }
@@ -137,10 +138,10 @@ public class CommentController {
                                         @RequestParam(required = false) String[] pic) {
         if (pic != null && pic.length > Constants.PIC_MAX_NUM)
             return Result.getResult(CommonError.PIC_NUM_EXCEED_MAX);
-        if (!qiNiuYunPicUtil.checkPicDomain(pic))
-            return Result.getResult(CommonError.PIC_DOMAIN_WRONG);
         if (content.length() == 0 && (pic == null || pic.length == 0))
             return Result.getResult(CommentError.PARAM_CAN_NOT_EMPTY);
+        if (!picUtil.checkPicHost(pic))
+            return Result.getResult(CommonError.PARAM_FORMAT_WRONG);
 
         return commentService.addCommunityComment(userId, content, pic);
     }

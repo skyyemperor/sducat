@@ -5,6 +5,7 @@ import com.sducat.common.core.data.po.SysUser;
 import com.sducat.common.core.result.error.AuthError;
 import com.sducat.common.core.result.CommonError;
 import com.sducat.common.core.result.Result;
+import com.sducat.common.util.StringUtil;
 import com.sducat.system.service.SysUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -36,9 +37,11 @@ public class UserController {
     @PreAuthorize("@pms.hasPerm('user:info:*')")
     @PostMapping("/info/update")
     public Result updateUserInfo(@RequestParam("_uid_") Long userId,
-                                 @Size(max = 50) @RequestParam(required = false) String nickName,
-                                 @RequestParam(required = false) String avatar) {
-        if (nickName == null && avatar == null)
+                                 @Size(max = 50) @RequestParam String nickName,
+                                 @RequestParam String avatar) {
+        if (nickName.equals("请登录"))
+            nickName = "猫友_" + userId;
+        if (StringUtil.isBlank(avatar) && StringUtil.isBlank(nickName))
             return Result.getResult(CommonError.PARAM_FORMAT_WRONG);
         userService.updateUser(new SysUser(userId, nickName, avatar));
         return Result.success();

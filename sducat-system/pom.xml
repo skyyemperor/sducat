@@ -17,7 +17,6 @@
             <artifactId>sducat-common</artifactId>
         </dependency>
 
-
     </dependencies>
 
 </project>

@@ -8,7 +8,6 @@
     <name>sducat</name>
     <description>山大猫猫</description>
 
-
     <modules>
         <module>sducat-common</module>
         <module>sducat-system</module>
@@ -16,7 +15,6 @@
         <module>sducat-admin</module>
     </modules>
     <packaging>pom</packaging>
-
 
     <properties>
         <java.version>1.8</java.version>
@@ -28,10 +26,11 @@
         <fastjson.version>1.2.74</fastjson.version>
         <okhttp.version>4.1.0</okhttp.version>
         <jsoup.version>1.12.1</jsoup.version>
-        <mybatis.plus.version>3.4.1</mybatis.plus.version>
         <jwt.version>0.9.1</jwt.version>
         <commons.io.version>2.5</commons.io.version>
+        <mybatis.plus.version>3.4.1</mybatis.plus.version>
         <qiniuyun.version>[7.4.0, 7.4.99]</qiniuyun.version>
+        <poi.version>4.0.1</poi.version>
     </properties>
 
     <dependencyManagement>
@@ -43,6 +42,12 @@
                 <version>2.2.13.RELEASE</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-boot-starter</artifactId>
+                <version>${mybatis.plus.version}</version>
             </dependency>
 
             <dependency>
@@ -63,12 +68,6 @@
                 <version>${fastjson.version}</version>
             </dependency>
 
-            <dependency>
-                <groupId>com.baomidou</groupId>
-                <artifactId>mybatis-plus-boot-starter</artifactId>
-                <version>${mybatis.plus.version}</version>
-            </dependency>
-
             <!--Token生成与解析-->
             <dependency>
                 <groupId>io.jsonwebtoken</groupId>
@@ -83,6 +82,12 @@
                 <version>${qiniuyun.version}</version>
             </dependency>
 
+            <!--Excel操作包-->
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi-ooxml</artifactId>
+                <version>${poi.version}</version>
+            </dependency>
 
             <!-- 通用工具模块 -->
             <dependency>
@@ -106,7 +111,6 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
 
     <build>
         <plugins>

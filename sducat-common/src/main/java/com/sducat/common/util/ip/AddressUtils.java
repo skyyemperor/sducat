@@ -1,11 +1,9 @@
 package com.sducat.common.util.ip;
 
 import com.alibaba.fastjson.JSONObject;
-import com.sducat.common.constant.Constants;
 import com.sducat.common.util.MapBuildUtil;
 import com.sducat.common.util.StringUtil;
-import com.sducat.common.util.http.HttpUtils;
-import com.sducat.common.util.http.OkHttpUtil;
+import com.sducat.common.util.OkHttpUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,9 +26,11 @@ public class AddressUtils {
             return "内网IP";
         }
         try {
-            String rspStr = OkHttpUtil.getInstance().getData(IP_URL,
-                    MapBuildUtil.builder().data("ip", ip).data("json", "true").get(),
-                    null);
+            String rspStr = OkHttpUtil.getInstance().get(
+                    IP_URL, MapBuildUtil.builder()
+                            .data("ip", ip)
+                            .data("json", "true")
+                            .get());
             if (StringUtil.isEmpty(rspStr)) {
                 log.error("获取地理位置异常 {}", ip);
                 return UNKNOWN;

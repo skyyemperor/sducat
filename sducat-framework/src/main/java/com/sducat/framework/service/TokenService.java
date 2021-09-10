@@ -196,9 +196,6 @@ public class TokenService {
 
     /**
      * 获取请求token
-     *
-     * @param request
-     * @return token
      */
     private String getToken(HttpServletRequest request) {
         return request.getHeader(header);

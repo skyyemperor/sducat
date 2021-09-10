@@ -13,26 +13,26 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class FilterConfig {
 
-    @Bean
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    public FilterRegistrationBean logFilterRegistration() {
-        FilterRegistrationBean registration = new FilterRegistrationBean();
-        registration.setFilter(new LogFilter());
-        registration.addUrlPatterns("/*");
-        registration.setName("logFilter");
-        registration.setOrder(1);
-        return registration;
-    }
+//    @Bean
+//    @SuppressWarnings({"rawtypes", "unchecked"})
+//    public FilterRegistrationBean logFilterRegistration() {
+//        FilterRegistrationBean registration = new FilterRegistrationBean();
+//        registration.setFilter(new LogFilter());
+//        registration.addUrlPatterns("/*");
+//        registration.setName("logFilter");
+//        registration.setOrder(1);
+//        return registration;
+//    }
 
-    @Bean
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    public FilterRegistrationBean signFilterRegistration() {
-        FilterRegistrationBean registration = new FilterRegistrationBean();
-        registration.setFilter(new SignFilter());
-        registration.addUrlPatterns("/*");
-        registration.setName("signFilter");
-        registration.setOrder(2);
-        return registration;
-    }
+//    @Bean
+//    @SuppressWarnings({"rawtypes", "unchecked"})
+//    public FilterRegistrationBean signFilterRegistration() {
+//        FilterRegistrationBean registration = new FilterRegistrationBean();
+//        registration.setFilter(new SignFilter());
+//        registration.addUrlPatterns("/*");
+//        registration.setName("signFilter");
+//        registration.setOrder(2);
+//        return registration;
+//    }
 
 }

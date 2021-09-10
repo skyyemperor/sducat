@@ -2,7 +2,7 @@ package com.sducat.common.util.wx;
 
 import com.sducat.common.util.JSONUtil;
 import com.sducat.common.util.MapBuildUtil;
-import com.sducat.common.util.http.OkHttpUtil;
+import com.sducat.common.util.OkHttpUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -36,13 +36,13 @@ public class AccessTokenUtil {
 
     public synchronized String getAccessToken() {
         if (System.currentTimeMillis() - requestTime > EXPIRE_TIME) {
-            String res = OkHttpUtil.getInstance().getData(
+            String res = OkHttpUtil.getInstance().get(
                     GET_ACCESS_TOKEN_URL,
                     MapBuildUtil.builder()
                             .data("grant_type", "client_credential")
                             .data("appid", appId)
                             .data("secret", appSecret)
-                            .get(), null);
+                            .get());
             accessToken = JSONUtil.getFieldFromJson(res, "access_token");
             requestTime = System.currentTimeMillis();
         }

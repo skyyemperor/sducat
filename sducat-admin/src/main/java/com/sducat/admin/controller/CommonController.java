@@ -4,6 +4,8 @@ import com.sducat.common.core.result.CommonError;
 import com.sducat.common.core.result.Result;
 import com.sducat.common.util.MapBuildUtil;
 import com.sducat.common.util.QiNiuYunPicUtil;
+import com.sducat.system.service.CommonService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -25,6 +27,9 @@ public class CommonController {
     @Autowired
     private QiNiuYunPicUtil qiNiuYunPicUtil;
 
+    @Autowired
+    private CommonService commonService;
+
     //允许的后缀
     private static final HashSet<String> ALLOW_SUFFIX = new HashSet<>(Arrays.asList(
             ".jpg", ".jpeg", ".png"
@@ -42,10 +47,10 @@ public class CommonController {
 
     @PreAuthorize("@pms.hasPerm('common:pic:submit')")
     @PostMapping("/pic/submit")
-    public Result submitPic(@RequestParam MultipartFile pic) {
-        if (!checkPicSuffix(pic))
+    public Result submitPic(@RequestParam MultipartFile file) {
+        if (!checkPicSuffix(file))
             return Result.getResult(CommonError.PIC_FORMAT_ERROR);
-        return Result.success(qiNiuYunPicUtil.uploadByMultipartFile(pic));
+        return commonService.uploadPic(file);
     }
 
     private boolean checkPicSuffix(MultipartFile... files) {

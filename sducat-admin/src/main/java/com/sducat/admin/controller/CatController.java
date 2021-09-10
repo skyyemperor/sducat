@@ -8,6 +8,7 @@ import com.sducat.common.core.result.error.CatError;
 import com.sducat.common.enums.CampusEnum;
 import com.sducat.common.enums.CatStatusEnum;
 import com.sducat.common.util.JSONUtil;
+import com.sducat.common.util.PicUtil;
 import com.sducat.common.util.QiNiuYunPicUtil;
 import com.sducat.common.util.StringUtil;
 import com.sducat.system.data.dto.CatDto;
@@ -42,7 +43,7 @@ public class CatController {
     private CatService catService;
 
     @Autowired
-    private QiNiuYunPicUtil qiNiuYunPicUtil;
+    private PicUtil picUtil;
 
     /**
      * 获取猫咪详细信息
@@ -187,8 +188,8 @@ public class CatController {
             @RequestParam String[] pic) {
         if (pic.length > Constants.PIC_MAX_NUM)
             return Result.getResult(CommonError.PIC_NUM_EXCEED_MAX);
-        if (!qiNiuYunPicUtil.checkPicDomain(pic))
-            return Result.getResult(CommonError.PIC_DOMAIN_WRONG);
+        if (!picUtil.checkPicHost(pic))
+            return Result.getResult(CommonError.PARAM_FORMAT_WRONG);
 
         NewCat cat = new NewCat(userId, campus, witnessLocation, witnessTime, description,
                 JSONUtil.toJson(pic), new Date(), Constants.WAIT_CHECK);
@@ -241,10 +242,10 @@ public class CatController {
         }
         pics.add(cat.getMainPic());
         pics.add(cat.getRoundPic());
-        for (String pic : pics) {
-            if (!qiNiuYunPicUtil.checkPicDomain(pic))
-                return Result.getResult(CommonError.PIC_DOMAIN_WRONG);
-        }
+
+        if (!picUtil.checkPicHost(pics))
+            return Result.getResult(CommonError.PARAM_FORMAT_WRONG);
+
         return Result.success();
     }
 

@@ -24,7 +24,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         SysUser user = userService.getUserByUserName(username);
         if (StringUtil.isNull(user)) {
             //首次登录，数据库中不存在，新插入一个用户
-            user = userService.register(new SysUser(username, username));
+            user = userService.register(new SysUser(username, "神秘猫友"));
         }
 
         return createLoginUser(user);

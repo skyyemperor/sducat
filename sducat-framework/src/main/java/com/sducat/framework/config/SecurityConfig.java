@@ -1,20 +1,17 @@
 package com.sducat.framework.config;
 
-import com.sducat.framework.security.filter.JwtAuthenticationTokenFilter;
+import com.sducat.framework.security.filter.TokenAuthenticationFilter;
 import com.sducat.framework.security.handle.AuthenticationEntryPointImpl;
 import com.sducat.framework.security.handle.LogoutSuccessHandlerImpl;
 import com.sducat.framework.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
@@ -47,7 +44,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
      * token认证过滤器
      */
     @Autowired
-    private JwtAuthenticationTokenFilter authenticationTokenFilter;
+    private TokenAuthenticationFilter tokenAuthenticationFilter;
 
     /**
      * 跨域过滤器
@@ -56,10 +53,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private CorsFilter corsFilter;
 
     /**
-     * 解决 无法直接注入 AuthenticationManager
-     *
-     * @return
-     * @throws Exception
+     * 解决 无法直接注入AuthenticationManager的问题
      */
     @Bean
     @Override
@@ -93,7 +87,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 // 过滤请求
                 .authorizeRequests()
-                // 对于登录login 验证码captchaImage 允许匿名访问
+                // 下方接口允许匿名访问
                 .antMatchers("/auth/**").anonymous()
                 .antMatchers("/cat/info/**").permitAll()
                 .antMatchers("/cat/search/**").permitAll()
@@ -110,9 +104,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .headers().frameOptions().disable();
         httpSecurity.logout().logoutUrl("/logout").logoutSuccessHandler(logoutSuccessHandler);
         // 添加JWT filter
-        httpSecurity.addFilterBefore(authenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
+        httpSecurity.addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         // 添加CORS filter
-        httpSecurity.addFilterBefore(corsFilter, JwtAuthenticationTokenFilter.class);
+        httpSecurity.addFilterBefore(corsFilter, TokenAuthenticationFilter.class);
         httpSecurity.addFilterBefore(corsFilter, LogoutFilter.class);
     }
 

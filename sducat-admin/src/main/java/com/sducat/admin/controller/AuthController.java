@@ -1,17 +1,29 @@
 package com.sducat.admin.controller;
 
-import com.sducat.common.core.redis.RedisCache;
+import com.alibaba.fastjson.JSON;
 import com.sducat.common.core.result.error.AuthError;
 import com.sducat.common.core.result.Result;
 import com.sducat.common.util.MapBuildUtil;
-import com.sducat.common.util.QiNiuYunPicUtil;
+import com.sducat.common.util.OkHttpUtil;
 import com.sducat.framework.service.AuthService;
+import com.sducat.system.data.po.Cat;
+import com.sducat.system.data.po.Comment;
+import com.sducat.system.data.po.NewCat;
+import com.sducat.system.data.po.ScienceModule;
+import com.sducat.system.mapper.CatMapper;
+import com.sducat.system.mapper.CommentMapper;
+import com.sducat.system.mapper.NewCatMapper;
+import com.sducat.system.mapper.ScienceModuleMapper;
+import com.sducat.system.service.CatService;
+import com.sducat.system.service.CommentService;
+import okhttp3.Response;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by skyyemperor on 2021-01-29 0:09
@@ -21,21 +33,13 @@ import java.util.List;
 @RequestMapping("/auth")
 public class AuthController {
 
-
     @Autowired
     private AuthService authService;
 
-    @Autowired
-    private QiNiuYunPicUtil qiNiuYunPicUtil;
-
-    @Autowired
-    private RedisCache redisCache;
-
-//    @RequestMapping("/test")
-//    public String test() {
-//       return likeOrUnlikeRedis().toString();
-////        return "test";
-//    }
+    @RequestMapping("/test")
+    public String test() {
+        return "true";
+    }
 
     /**
      * 登录方法

@@ -94,6 +94,7 @@ public class CatServiceImpl extends ServiceImpl<CatMapper, Cat> implements CatSe
             } catch (InterruptedException e) { //to do nothing
             }
             redisCache.deleteObject(catInfoRedisKey);
+            redisCache.deleteObjectWithPattern(Constants.SEARCH_CAT_REDIS_KEY + "*");
         });
         return ans;
     }
@@ -115,7 +116,7 @@ public class CatServiceImpl extends ServiceImpl<CatMapper, Cat> implements CatSe
         catLessDtos = cats.stream().map(CatLessDto::getDto).collect(Collectors.toList());
 
         //将结果存入redis
-        redisCache.setObjectAsync(searchCatRedisKey, catLessDtos, 2, TimeUnit.DAYS);
+        redisCache.setObjectAsync(searchCatRedisKey, catLessDtos, 10, TimeUnit.DAYS);
         return catLessDtos;
     }
 

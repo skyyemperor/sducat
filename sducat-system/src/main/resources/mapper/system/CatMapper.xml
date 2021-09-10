@@ -112,11 +112,11 @@
             </if>
             <!--猫咪状态为在校时，待领养也属于在校-->
             <if test="status != null and status == @com.sducat.common.enums.CatStatusEnum@AT_SCHOOL">
-                AND (status = #{status.key} OR status =
-                                               '${@com.sducat.common.enums.CatStatusEnum@WAIT_ADOPTED.getKey()}')
+                AND (status = #{status.key} OR
+                     status = '${@com.sducat.common.enums.CatStatusEnum@WAIT_ADOPTED.getKey()}')
             </if>
             <if test="status != null and status != @com.sducat.common.enums.CatStatusEnum@AT_SCHOOL">
-               AND status = #{status.key}
+                AND status = #{status.key}
             </if>
             <if test="color != null and color != ''">
                 AND color = #{color}

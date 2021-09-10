@@ -92,11 +92,17 @@ public class RedisCache {
 
     /**
      * 删除单个对象
-     *
-     * @param key
      */
     public boolean deleteObject(final String key) {
         return redisTemplate.delete(key);
+    }
+
+    /**
+     * 删除单个对象
+     */
+    public boolean deleteObjectWithPattern(final String pattern) {
+        Set keys = redisTemplate.keys(pattern);
+        return redisTemplate.delete(keys) == keys.size();
     }
 
     /**

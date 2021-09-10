@@ -5,11 +5,11 @@ import javax.servlet.http.HttpServletRequestWrapper;
 import java.util.HashMap;
 import java.util.Map;
 
-public class JwtRequestParameterWrapper extends HttpServletRequestWrapper {
+public class RequestParameterWrapper extends HttpServletRequestWrapper {
 
     private Map<String, String[]> params = new HashMap<>();
 
-    public JwtRequestParameterWrapper(HttpServletRequest request) {
+    public RequestParameterWrapper(HttpServletRequest request) {
         super(request);
         //将现有parameter传递给params
         this.params.putAll(request.getParameterMap());
@@ -21,7 +21,7 @@ public class JwtRequestParameterWrapper extends HttpServletRequestWrapper {
      * @param request
      * @param extraParams
      */
-    public JwtRequestParameterWrapper(HttpServletRequest request, Map<String, Object> extraParams) {
+    public RequestParameterWrapper(HttpServletRequest request, Map<String, Object> extraParams) {
         this(request);
         addParameters(extraParams);
     }

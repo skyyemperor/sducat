@@ -22,7 +22,7 @@ import java.util.HashMap;
  * token过滤器 验证token有效性
  */
 @Component
-public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
+public class TokenAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private TokenService tokenService;
 
@@ -31,12 +31,13 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         LoginUser loginUser = tokenService.getLoginUser(request);
         if (StringUtil.isNotNull(loginUser) && StringUtil.isNull(SecurityUtil.getAuthentication())) {
-            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginUser, null, loginUser.getAuthorities());
+            UsernamePasswordAuthenticationToken authenticationToken =
+                    new UsernamePasswordAuthenticationToken(loginUser, null, loginUser.getAuthorities());
             authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         }
 
-        JwtRequestParameterWrapper wrapper = new JwtRequestParameterWrapper(request);
+        RequestParameterWrapper wrapper = new RequestParameterWrapper(request);
         if (StringUtil.isNotNull(loginUser)) {
             //将userId以参数`_uid_`的形式添加到请求中
             HashMap<String, Object> param = new HashMap<>();

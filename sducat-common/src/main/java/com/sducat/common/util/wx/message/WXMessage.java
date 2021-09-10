@@ -1,10 +1,9 @@
 package com.sducat.common.util.wx.message;
 
 import com.alibaba.fastjson.JSONObject;
-import com.sducat.common.util.JSONUtil;
 import com.sducat.common.util.MapBuildUtil;
 import com.sducat.common.util.TaskExecutorUtil;
-import com.sducat.common.util.http.OkHttpUtil;
+import com.sducat.common.util.OkHttpUtil;
 import com.sducat.common.util.wx.AccessTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -38,13 +37,12 @@ public abstract class WXMessage {
 
     public void send(String openId, String... data) {
         taskExecutorUtil.run(() -> {
-            String res = OkHttpUtil.getInstance().postDataByJson(
+            String res = OkHttpUtil.getInstance().postJson(
                     SEND_MESSAGE_URL + "?access_token=" + accessTokenUtil.getAccessToken(),
-                    MapBuildUtil.builder()
-                            .data("touser", openId)
+                    MapBuildUtil.builder().data("touser", openId)
                             .data("template_id", getTemplateId())
                             .data("data", buildData(data))
-                            .get(), null);
+                            .get());
             System.out.println(res);
         });
     }

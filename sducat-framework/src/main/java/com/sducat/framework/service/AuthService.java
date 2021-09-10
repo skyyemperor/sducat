@@ -3,10 +3,9 @@ package com.sducat.framework.service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.sducat.common.core.data.dto.LoginUser;
-import com.sducat.common.core.result.Result;
 import com.sducat.common.util.MapBuildUtil;
 import com.sducat.common.util.StringUtil;
-import com.sducat.common.util.http.OkHttpUtil;
+import com.sducat.common.util.OkHttpUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -102,14 +101,13 @@ public class AuthService {
 
 
     private String wxLogin(String code) {
-        String response = OkHttpUtil.getInstance().getData(WX_LOGIN_API,
+        String response = OkHttpUtil.getInstance().get(WX_LOGIN_API,
                 MapBuildUtil.builder()
                         .data("appid", appId)
                         .data("secret", appSecret)
                         .data("js_code", code)
                         .data("grant_type", "authorization_code")
-                        .get(),
-                null);
+                        .get());
 
         if (response != null) {
             JSONObject jsonObject = JSON.parseObject(response);
